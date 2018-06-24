@@ -4,8 +4,7 @@
 
   // параметры для отправления лида
   var N1_API_PARAMS = {
-    // url: 'https://api.n1.ru/api/v1/leads/',
-    url: 'https://nskan.ru',
+    url: 'https://api.n1.ru/api/v1/leads/',
     baseParams: {
       type: 'refinans',
       platform: 'tilda',
@@ -34,7 +33,7 @@
   };
 
   // если не будет jQ - инджектим с данного урл
-  var CDN_JQUERY = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js";
+  var CDN_JQUERY = "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js";
 
   /* ЛОГИЧЕСКИЕ КОНСТАНТЫ */
   var DISABLED_REFINANCE_LAST_MONTH = 24 // Запретить расчет, если до конца текущей ипотеки менее стольки месяцев
@@ -82,6 +81,7 @@
         bindDOMElements();
         bindDOMEvents();
         startingSettings();
+        includeDatepicker();
       });
     });
   }
@@ -126,16 +126,21 @@
 
   function bindDOMEvents() {
     $DOM.percentInput.on('keyup', onDataChange);
+    $DOM.percentInput.on('change', onDataChange);
+
     $DOM.monthlyFeeInput.on('keyup', onDataChange);
+    $DOM.monthlyFeeInput.on('change', onDataChange);
+
     $DOM.startMortgageInput.on('focusout', onDataChange);
+
     $DOM.yearsInput.on('keyup', onDataChange);
+    $DOM.yearsInput.on('change', onDataChange);
 
     $DOM.newPercentInput.on('keyup', tableСalculation);
     $DOM.newPercentInput.on('change', tableСalculation);
 
-
-    $DOM.leadFormInputPhone.on('change', checkLeadData);
-    $DOM.leadFormInputMail.on('change', checkLeadData);
+    $DOM.leadFormInputPhone.on('keyup', checkLeadData);
+    $DOM.leadFormInputMail.on('keyup', checkLeadData);
 
 
     $DOM.checkboxForm.on('change', checkLeadData);
@@ -460,7 +465,6 @@
   }
 
   function afterJqueryLoaded(callback) {
-    includeDatepicker();
     includeMaskedInputs();
     callback();
     $('body').append('<style>$INJECT_style</style>');
@@ -539,7 +543,7 @@
     }
 
     ENV.postRequest(N1_API_PARAMS.url, data, function(q, w, e) {
-      getElementByRfcId('finalArea').html('<div class="rfc-finalAreaText">'+FINAL_TEXT+'</div>');
+      getElementByRfcId('finalArea').html('<div class="rfc-finalAreaText">' + FINAL_TEXT + '</div>');
     });
   }
 
@@ -554,7 +558,18 @@
     $('body').append('<style>$INJECT_lib_datepicker_css</style>');
 
     //вставить скрипты датапикера
-    $INJECT_lib_datepicker_js;
+    (function() {
+      $INJECT_lib_datepicker_js;
+    })();
+
+
+    $DOM.startMortgageInput.datepicker({
+      minView: 'months',
+      dateFormat: 'MM yyyy',
+      view: 'months',
+      autoClose: true
+    })
+
   }
 
   function includeMaskedInputs() {

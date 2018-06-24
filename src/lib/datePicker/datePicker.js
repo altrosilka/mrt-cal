@@ -38,7 +38,7 @@
             moveToOtherYearsOnSelect: true,
 
             minDate: '',
-            maxDate: new Date(),
+            maxDate: '',
             disableNavWhenOutOfRange: true,
 
             multipleDates: false, // Boolean or Number
@@ -49,7 +49,7 @@
             clearButton: false,
 
             showEvent: 'focus',
-            autoClose: true,
+            autoClose: false,
 
             // navigation
             monthsField: 'monthsShort',
