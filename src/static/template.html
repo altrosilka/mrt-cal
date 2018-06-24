@@ -1,0 +1,143 @@
+<div class="rfc-area">
+  <div data-rfc-id="divPayingNow">
+    <h2 class="rfc-hide2">Плачу ипотеку сейчас</h2>
+    <label class="rfc-label">Ставка</label>
+    <input type="number" min="8" max="20" class="rfc-input" data-rfc-id="rfc-percent"><span class="rfc-span symbol"> %</span>
+    <br>
+    <label class="rfc-label">Платеж по графику</label>
+    <input type="number" min="5000" class="rfc-input" data-rfc-id="rfc-monthlyFee"><span class="rfc-span symbol"> ₽</span>
+    <br>
+    <label class="rfc-label">Взял ипотеку</label>
+    <input type="text" class="datepicker-here" data-min-view="months" data-view="months" data-date-format="MM yyyy" data-rfc-id="rfc-startMortgage">
+    <br>
+    <label class="rfc-label">На сколько лет</label>
+    <input type="number" min="5" max="30" class="rfc-input" data-rfc-id="rfc-years">
+    <br>
+  </div>
+  <div data-rfc-id="alertText" class="rfc-hidden"></div>
+  <div data-rfc-id="nextStepArea" class="rfc-nextStepArea">
+    <div data-rfc-id="creditPercentAmount">
+      <label class="rfc-label" id="rfc-balanceOfTheLoanText">Остаток по кредиту</label>
+      <label type="text" class="rfc-label" id="rfc-balanceOfTheLoan"></label>
+      <br>
+      <label id="rfc-balanceOfTheInterestText" class="rfc-label rfc-hide"></label>
+      <label type="text" class="rfc-label rfc-hide" id="rfc-balanceOfTheInterest"></label>
+    </div>
+    <div data-rfc-id="divRefinancebuy">
+      <div class="rfc-separator"></div>
+      <h2 class="rfc-h2">Рефинансирую <span class="rfc-hidden" data-rfc-id="rfc-newPercentToSpan">под ставку <span data-rfc-id="rfc-newPercentSpan"></span>%</span></h2>
+      <div data-rfc-id="rfc-refinanceDiv">
+        <label class="rfc-label">под ставку</label>
+        <input type="number" min="6" max="15" class="rfc-input" data-rfc-id="rfc-newPercentInput"><span class="rfc-span symbol"> %</span>
+      </div>
+      <div id="rfc-noCheating" class="rfc-hidden">
+        <h1 class="rfc-h1">Нет, мы не мошенники, и не будем заставлять вас рефинансировать ипотеку под больший процент :)</h1></div>
+      <table class="rfc-table rfc-table--desktop" id="rfc-tableRefinancebuy">
+        <tr id="rfc-tr1">
+          <th data-cell-id="rfc-td10">Платеж в месяц</th>
+          <td data-cell-id="rfc-td11"></td>
+          <td data-cell-id="rfc-td12"></td>
+          <td data-cell-id="rfc-td13"></td>
+          <td data-cell-id="rfc-td14"></td>
+          <td data-cell-id="rfc-td15"></td>
+          <td data-cell-id="rfc-td16"></td>
+          <td data-cell-id="rfc-td17"></td>
+        </tr>
+        <tr>
+          <th data-cell-id="rfc-td20">Погасите ипотеку</th>
+          <td data-cell-id="rfc-td21"></td>
+          <td data-cell-id="rfc-td22"></td>
+          <td data-cell-id="rfc-td23"></td>
+          <td data-cell-id="rfc-td24"></td>
+          <td data-cell-id="rfc-td25"></td>
+          <td data-cell-id="rfc-td26"></td>
+          <td data-cell-id="rfc-td27"></td>
+        </tr>
+        <tr>
+          <th data-cell-id="rfc-td30">Сэкономите</th>
+          <td data-cell-id="rfc-td31"></td>
+          <td data-cell-id="rfc-td32"></td>
+          <td data-cell-id="rfc-td33"></td>
+          <td data-cell-id="rfc-td34"></td>
+          <td data-cell-id="rfc-td35"></td>
+          <td data-cell-id="rfc-td36"></td>
+          <td data-cell-id="rfc-td37"></td>
+        </tr>
+      </table>
+      <table class="rfc-table rfc-table--mobile" id="rfc-tableRefinancebuy">
+        <tr id="rfc-tr1">
+          <th data-cell-id="rfc-td10">Платеж в месяц</th>
+          <th data-cell-id="rfc-td20">Погасите ипотеку</th>
+          <th data-cell-id="rfc-td30">Сэкономите</th>
+        </tr>
+        <tr id="rfc-tr2">
+          <td data-cell-id="rfc-td11"></td>
+          <td data-cell-id="rfc-td21"></td>
+          <td data-cell-id="rfc-td31"></td>
+        </tr>
+        <tr id="rfc-tr3">
+          <td data-cell-id="rfc-td12"></td>
+          <td data-cell-id="rfc-td22"></td>
+          <td data-cell-id="rfc-td32"></td>
+        </tr>
+        <tr id="rfc-tr4">
+          <td data-cell-id="rfc-td13"></td>
+          <td data-cell-id="rfc-td23"></td>
+          <td data-cell-id="rfc-td33"></td>
+        </tr>
+        <tr id="rfc-tr5">
+          <td data-cell-id="rfc-td14"></td>
+          <td data-cell-id="rfc-td24"></td>
+          <td data-cell-id="rfc-td34"></td>
+        </tr>
+        <tr id="rfc-tr6">
+          <td data-cell-id="rfc-td15"></td>
+          <td data-cell-id="rfc-td25"></td>
+          <td data-cell-id="rfc-td35"></td>
+        </tr>
+        <tr id="rfc-tr7">
+          <td data-cell-id="rfc-td16"></td>
+          <td data-cell-id="rfc-td26"></td>
+          <td data-cell-id="rfc-td36"></td>
+        </tr>
+        <tr id="rfc-tr8">
+          <td data-cell-id="rfc-td17"></td>
+          <td data-cell-id="rfc-td27"></td>
+          <td data-cell-id="rfc-td37"></td>
+        </tr>
+      </table>
+    </div>
+    <div class="rfc-requestarea">
+      <div class="rfc-separator"></div>
+      <h2 class="rfc-h2">Оставить заявку на рефинансирование</h2>
+      <div class="rfc-ra-desc">Наши специалисты свяжутся с вами, чтобы предложить
+        <br>выгодные условия рефинансирования ипотеки</div>
+      <div class="rfc-ra-row">
+        <div class="rfc-ra-col">
+          <label>
+            <div>Ваша почта</div>
+            <input type="mail" data-rfc-id="input:mail" placeholder="pochta@n1.ru">
+          </label>
+        </div>
+        <div class="rfc-ra-col">
+          <label>
+            <div>Ваш телефон</div>
+            <input type="text" data-rfc-id="input:phone" placeholder="+7 (999) 999-99-99">
+          </label>
+        </div>
+      </div>
+      <div class="rfc-oferta">
+        <iframe data-rfc-id="ofertaFrame" src="about:blank"></iframe>
+      </div>
+      <div class="rfc-accept-oferta">
+        <label>
+          <input type="checkbox" data-rfc-id="form:checkbox">
+          <span></span> Нажимая кнопку «Оставить заявку» и оставляя данные о себе, я подтверждаю, что ознакомился с текстом оферты, безусловно и безоговорочно принимаю (акцептую) её условия; подтверждаю также, что ознакомился с <a href="https://n1st.ru/realty/settings/politicConfN1.pdf" target="_blank">Политикой конфиденциальности</a>
+        </label>
+      </div>
+      <div class="rfc-send-btn-area" data-rfc-id="finalArea">
+        <button class="rfc-send-btn rfc-disabled" disabled="disabled" data-rfc-id="sendLeadButton">Отправить заявку</button>
+      </div>
+    </div>
+  </div>
+</div>
