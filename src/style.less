@@ -9,6 +9,7 @@
 
 
 @n1Color: #c03c40;
+@n1ColorHover: #d94348;
 
 #rfc-calc * {
   box-sizing: border-box;
@@ -17,6 +18,11 @@
 #rfc-calc {
   .rfc-hidden {
     display: none;
+  }
+  h2 {
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
   }
   .rfc-finalAreaText {
     font-size: 20px;
@@ -28,9 +34,9 @@
     background: #bbb;
   }
   .rfc-area {
-    background-color: #EAEAEA;
-    font-family: Helvetica;
-    padding: 10px 50px;
+    background-color: #f6f7f8;
+    font-family: 'PT Sans';
+    padding: 40px 30px;
     vertical-align: top;
     @media @xs {
       padding: 30px 15px;
@@ -46,8 +52,8 @@
   }
 
   .symbol {
-    font-size: 32px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: normal;
   }
 
   #rfc-tableRefinancebuy,
@@ -249,11 +255,11 @@
       left: -20px;
       &+span {
         position: absolute;
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         display: block;
         background: #fff;
-        border-radius: 3px;
+        border-radius: 50%;
         border: 1px solid #ccc;
         left: -30px;
         top: 0;
@@ -263,10 +269,11 @@
           content: '';
           position: absolute;
           background: #c11f1f;
-          width: 8px;
-          height: 8px;
+          width: 10px;
+          height: 10px;
           top: 3px;
           left: 3px;
+          border-radius: 50%;
         }
       }
     }
@@ -288,6 +295,10 @@
     box-shadow: none;
     outline: none;
     cursor: pointer;
+    transition: 0.2s;
+    &:hover {
+      background: @n1ColorHover;
+    }
     &[disabled] {
       opacity: 0.6;
     }
@@ -314,6 +325,9 @@
     }
     .rfc-show-calculations-text {
       display: none;
+      p {
+        margin-top: 20px;
+      }
     }
   }
 
