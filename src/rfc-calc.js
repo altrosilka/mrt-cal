@@ -67,10 +67,24 @@
 
   var MONTH_NAMES_SHORT = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сент', 'Окт', 'Ноя', 'Дек'];
   var MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+  var MONTH_NAMES_PARENT_OBJ = {
+    'Янв': 'январе',
+    'Фев': 'феврале',
+    'Мар': 'марте',
+    'Апр': 'апреле',
+    'Май': 'мае',
+    'Июн': 'июне',
+    'Июл': 'июле',
+    'Авг': 'августе',
+    'Сент': 'сентябре',
+    'Окт': 'октябре',
+    'Ноя': 'ноябре',
+    'Дек': 'декабре',
+  };
 
   /* ОБЪЯВЛЕНИЕ РАСЧЕТНЫХ ПЕРЕМЕННЫХ */
-  var $DOM = {};
-  var sendedParams = {};
+  var $DOM = {},
+    calculationsParams = {};
 
   initCalculator();
 
@@ -87,11 +101,6 @@
   }
 
   function insertHtml() {
-    // $('<div data-rfc-id="' + DOM_RFC_ID.divPayingNow + '">').appendTo('#' + rfcCalcId);
-    // $('<div data-rfc-id="' + DOM_RFC_ID.alertText + '" style="display:none;"></div><div data-rfc-id="' + DOM_RFC_ID.nextStepArea + '" style="display:none;"><div data-rfc-id="' + DOM_RFC_ID.divRefinancebuy + '"></div>').appendTo('#' + rfcCalcId);
-
-
-
     $('#' + rfcCalcId).html("$INJECT_template");
     $DOM.divPayingNow = getElementByRfcId(DOM_RFC_ID.divPayingNow);
     $DOM.divRefinancebuy = getElementByRfcId(DOM_RFC_ID.divRefinancebuy);
@@ -99,11 +108,6 @@
     $DOM.alertText = getElementByRfcId(DOM_RFC_ID.alertText);
 
     appendOferta();
-
-
-    // debugger
-    $("[data-rfc-id='input:phone']").mask("+7-999-999-99-99");
-
   }
 
   function bindDOMElements() {
@@ -120,11 +124,15 @@
     $DOM.checkboxForm = getElementByRfcId('form:checkbox');
     $DOM.sendLeadButton = getElementByRfcId('sendLeadButton');
     $DOM.leadFormInputPhone = getElementByRfcId('input:phone');
-    $DOM.leadFormInputMail = getElementByRfcId('input:mail');
+    $DOM.leadFormInputName = getElementByRfcId('input:name');
+    $DOM.calculationsArea = getElementByRfcId('calculations');
+    $DOM.calculationsBtn = getElementByRfcId('calculationsBtn');
 
   }
 
   function bindDOMEvents() {
+    $DOM.leadFormInputPhone.mask("+7-999-999-99-99");
+
     $DOM.percentInput.on('keyup', onDataChange);
     $DOM.percentInput.on('change', onDataChange);
 
@@ -140,22 +148,26 @@
     $DOM.newPercentInput.on('change', tableСalculation);
 
     $DOM.leadFormInputPhone.on('keyup', checkLeadData);
-    $DOM.leadFormInputMail.on('keyup', checkLeadData);
+    $DOM.leadFormInputName.on('keyup', checkLeadData);
 
 
     $DOM.checkboxForm.on('change', checkLeadData);
+    $DOM.calculationsBtn.on('click', function() {
+      $DOM.calculationsArea.show();
+      $DOM.calculationsBtn.hide();
+    });
 
     $DOM.sendLeadButton.on('click', function() {
-      if ($(this).attr('disabled')) return;
+      if ($DOM.sendLeadButton.attr('disabled')) return;
 
-      $(this).val('Отправляем...').attr('disabled', 'disabled');
+      $DOM.sendLeadButton.val('Отправляем...').attr('disabled', 'disabled');
 
       sendLeadRequest();
     });
   }
 
   function checkLeadData() {
-    if ($DOM.checkboxForm.prop('checked') && $DOM.leadFormInputPhone.val().length > 0 && $DOM.leadFormInputMail.val().length > 0) {
+    if ($DOM.checkboxForm.prop('checked') && $DOM.leadFormInputPhone.val().length > 0) {
       $DOM.sendLeadButton.removeAttr('disabled');
     } else {
       $DOM.sendLeadButton.attr('disabled', 'disabled');
@@ -202,8 +214,14 @@
       return hideNextStepArea();
     }
 
-    sendedParams.startMortgage = DATA_OPERATION.getDateForRequest($DOM.startMortgageInput.val())
+    calculationsParams.startMortgage = DATA_OPERATION.getDateForRequest($DOM.startMortgageInput.val())
 
+    var currentMonthFromStart = DATA_OPERATION.getDateMonthNumberFromStart();
+    var dateStartMonthNumber = DATA_OPERATION.getDateMonthNumberFromStart($DOM.startMortgageInput.val());
+    var lastDateMonth = dateStartMonthNumber + $DOM.yearsInput.val() * 12;
+    var monthNumber = lastDateMonth % 12;
+    var yearNumber = (lastDateMonth - monthNumber) / 12;
+    calculationsParams.finishDateParent = MONTH_NAMES_PARENT_OBJ[MONTH_NAMES_SHORT[monthNumber - 1]] + ' ' + yearNumber;
 
     showNextStepArea();
     setTextIntoBalanceIntoDivPayingNow();
@@ -258,11 +276,11 @@
     creditBody = parseInt(causeCalculating(0, 0));
     creditPercentes = parseInt(causeCalculating(1, 0));
 
-    sendedParams.creditBody = creditBody;
-    sendedParams.creditPercentes = creditPercentes;
+    calculationsParams.creditBody = creditBody;
+    calculationsParams.creditPercentes = creditPercentes;
 
-    $DOM.balanceOfTheLoanLabel.html(splitIntoThousands(creditBody));
-    $DOM.balanceOfTheInterestLabel.html("+ проценты " + splitIntoThousands(creditPercentes));
+    $DOM.balanceOfTheLoanLabel.html(DATA_OPERATION.splitIntoThousands(creditBody));
+    $DOM.balanceOfTheInterestLabel.html("+ проценты " + DATA_OPERATION.splitIntoThousands(creditPercentes));
     if (checkInputs()) { tableСalculation(); }
   };
 
@@ -279,6 +297,16 @@
       $('.rfc-table--mobile').css({ 'display': 'none' });
       $DOM.noCheating.css({ 'display': 'block' });
     }
+
+    calculationsParams.refinans_rate = parseFloat($DOM.percentInput.val());
+    calculationsParams.refinans_payment = parseFloat($DOM.monthlyFeeInput.val());
+    calculationsParams.refinans_date = calculationsParams.startMortgage;
+    calculationsParams.refinans_period = parseFloat($DOM.yearsInput.val());
+    calculationsParams.refinans_rate_now = parseFloat($DOM.newPercentInput.val());
+    calculationsParams.refinans_price = calculationsParams.creditBody;
+    calculationsParams.refinans_percent = calculationsParams.creditPercentes;
+
+    $DOM.calculationsArea.html(getDescriptionText(calculationsParams));
   };
 
   function setMonthlyFeeArray() {
@@ -297,7 +325,7 @@
     for (i = 0; i < monthlyFeeArray.length; i++) {
       var tdId = "rfc-td1";
       tdId += i + 1;
-      $('[data-cell-id="' + tdId + '"]').html(splitIntoThousands(monthlyFeeArray[i]));
+      $('[data-cell-id="' + tdId + '"]').html(DATA_OPERATION.splitIntoThousands(monthlyFeeArray[i]));
     };
   };
 
@@ -313,6 +341,8 @@
     };
     monthlyFeeArray[0] = monthlyFeeArray[3] - step + TABLE_PAYMENT_STEP;
     monthlyFeeArray[0] = roundingThousands(monthlyFeeArray[0], 1);
+
+
     setMonthlyFeeArray();
 
     for (var i = 0; i < theMaturityDateOfTheMortgage.length; i++) {
@@ -328,7 +358,7 @@
         }
       };
 
-      saving[i] = principalTotalInterestDebt - principalInterestDebt;
+      saving[i] = Math.floor(principalTotalInterestDebt - principalInterestDebt);
     };
 
     for (i = 0; i < theMaturityDateOfTheMortgage.length; i++) {
@@ -337,13 +367,16 @@
       $('[data-cell-id="' + tdId + '"]').html(theMaturityDateOfTheMortgage[i]);
     };
 
+    calculationsParams.monthlyFeeArray = [monthlyFeeArray[0], monthlyFeeArray[3], monthlyFeeArray[6]];
+    calculationsParams.theMaturityDateOfTheMortgage = [theMaturityDateOfTheMortgage[0], theMaturityDateOfTheMortgage[3], theMaturityDateOfTheMortgage[6]];
+    calculationsParams.saving = [saving[0], saving[3], saving[6]];
   };
 
   function setParametersOfTableTR3() {
     for (i = 0; i < monthlyFeeArray.length; i++) {
       var tdId = "rfc-td3";
       tdId += i + 1;
-      $('[data-cell-id="' + tdId + '"]').html(splitIntoThousands(Math.floor(saving[i])));
+      $('[data-cell-id="' + tdId + '"]').html(DATA_OPERATION.splitIntoThousands(saving[i]));
     };
   };
 
@@ -382,12 +415,6 @@
       var N = Math.ceil(MATH.logs((P / (monthlyFee / S - P) + 1), 1 + P));
     };
 
-    function calcOverFee(creditAmount, creditPeriod, monthlyFee) {
-      var X = monthlyFee; // ежемесячный платеж
-      var NN = creditPeriod; // период кредитования
-      var overFee = X * NN - creditAmount;
-      return overFee;
-    };
 
     principalInterestDebt = calcOverFee(S, N, monthlyFee);
 
@@ -412,6 +439,14 @@
       if (i == differenceDate) {
         balanceOfTheInterest = interestSum;
       };
+    };
+
+
+    function calcOverFee(creditAmount, creditPeriod, monthlyFee) {
+      var X = monthlyFee; // ежемесячный платеж
+      var NN = creditPeriod; // период кредитования
+      var overFee = X * NN - creditAmount;
+      return overFee;
     };
 
     function getBalanceOfTheLoan() {
@@ -445,14 +480,6 @@
 
 
 
-
-  function splitIntoThousands(number) {
-    number = number - (number % 1);
-    number = String(number);
-    number = number.replace(/\B(?=(?:\d{3})+(?!\d))/g, ' ');
-    number += " ₽"
-    return number;
-  }
 
   function prepareStylesAndScripts(callback) {
     if (window.jQuery) {
@@ -521,6 +548,20 @@
     }
   };
 
+
+  function getDescriptionText(info) {
+    var str = '<p>Ипотека на прежних условиях. Остаток по кредиту — ${DATA_OPERATION.splitIntoThousands(info.refinans_price)}. Будете гасить ипотеку по ставке ${info.refinans_rate}% и каждый месяц платить по ${DATA_OPERATION.splitIntoThousands(info.refinans_payment)}. В этом случае закроете ипотеку в ${info.finishDateParent}. За это время кроме основного долга отдадите ${DATA_OPERATION.splitIntoThousands(info.refinans_percent)} процентов.</p>';
+    str += '<p>Рефинансирование. Остаток по кредиту — ${DATA_OPERATION.splitIntoThousands(info.refinans_price)}. Рефинансируете ипотеку и будете гасить ее по ставке ${info.refinans_rate_now}%. ';
+    str += '<br>При платеже ${DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[0])} закроете ипотеку в ${DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[0])}, на процентах сэкономите ${DATA_OPERATION.splitIntoThousands(calculationsParams.saving[0])}.';
+    str += '<br>При платеже ${DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[1])} закроете ипотеку в ${DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[1])}, на процентах сэкономите ${DATA_OPERATION.splitIntoThousands(calculationsParams.saving[1])}.';
+    str += '<br>При платеже ${DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[2])} закроете ипотеку в ${DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[2])}, на процентах сэкономите ${DATA_OPERATION.splitIntoThousands(calculationsParams.saving[2])}.</p>';
+    str += '<p>Дополнительные расходы при рефинансировании ипотеки. Если вы уйдете из своего банка в другой, появятся дополнительные расходы. Вычтите эти расходы из полученной суммы экономии.</p>';
+    str += '<p>Обязательные расходы: страхование имущества, титула, жизни и здоровья заемщика — от 0,3% суммы кредита, оценка квартиры — от 2000 Р, госпошлина за снятие и наложение обременения — 1000 Р. Это усредненные данные, попросите у своего банка точные суммы.</p>';
+    str += '<p>Необязательные расходы (в зависимости от требований банка): повышенная ставка на период снятия обременения и наложения нового — плюс 0,5–2 процентных пункта к новой ставке по кредиту.</p>';
+
+    return str;
+  }
+
   function sendLeadRequest() {
 
     var data = {};
@@ -530,16 +571,16 @@
     }
 
     data.phone = getElementByRfcId('input:phone').val();
-    data.email = getElementByRfcId('input:mail').val();
+    data.name = getElementByRfcId('input:name').val();
 
     data.params = {
-      refinans_rate: parseFloat($DOM.percentInput.val()), // текущая процентная ставка
-      refinans_payment: parseFloat($DOM.monthlyFeeInput.val()), // текущий ежемесячный платеж
-      refinans_date: sendedParams.startMortgage, // месяц и год когда взял ипотеку
-      refinans_period: parseFloat($DOM.yearsInput.val()), // период на какой взял ипотеку
-      refinans_rate_now: parseFloat($DOM.newPercentInput.val()), // ставка после рефинансирования
-      refinans_price: sendedParams.creditBody, // остаток по оплате
-      refinans_percent: sendedParams.creditPercentes // проценты по оплате
+      refinans_rate: calculationsParams.refinans_rate, // текущая процентная ставка
+      refinans_payment: calculationsParams.refinans_payment, // текущий ежемесячный платеж
+      refinans_date: calculationsParams.refinans_date, // месяц и год когда взял ипотеку
+      refinans_period: calculationsParams.refinans_period, // период на какой взял ипотеку
+      refinans_rate_now: calculationsParams.refinans_rate_now, // ставка после рефинансирования
+      refinans_price: calculationsParams.creditBody, // остаток по оплате
+      refinans_percent: calculationsParams.creditPercentes // проценты по оплате
     }
 
     ENV.postRequest(N1_API_PARAMS.url, data, function(q, w, e) {
@@ -600,6 +641,7 @@
       $.ajax({
         type: "POST",
         url: url,
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', //TODO: сделать нужный для N1 api тип
         data: obj,
         complete: callback
       });
@@ -626,6 +668,7 @@
       document.getElementsByTagName("head")[0].appendChild(script);
     }
   }
+
 
 
 
@@ -658,6 +701,20 @@
       } else {
         return (self.getYearOfString(date) * 12 + self.getNumberMonthOfString(date) + 1);
       }
+    }
+
+    self.splitIntoThousands = function(number) {
+      number = number - (number % 1);
+      number = String(number);
+      number = number.replace(/\B(?=(?:\d{3})+(?!\d))/g, ' ');
+      number += " ₽"
+      return number;
+    }
+
+    self.replaceMonthNameToParent = function(str) {
+      var strArr = str.split(' ');
+
+      return MONTH_NAMES_PARENT_OBJ[strArr[0]] + ' ' + strArr[1];
     }
 
     return self;
