@@ -1,115 +1,151 @@
 <div class="rfc-area">
   <div data-rfc-id="divPayingNow">
     <h2 class="rfc-hide2">Плачу ипотеку сейчас</h2>
-    <label class="rfc-label">Ставка</label>
-    <input type="number" min="8" max="20" class="rfc-input" data-rfc-id="rfc-percent"><span class="rfc-span symbol"> %</span>
-    <br>
-    <label class="rfc-label">Платеж по графику</label>
-    <input type="number" min="5000" class="rfc-input" data-rfc-id="rfc-monthlyFee"><span class="rfc-span symbol"> ₽</span>
-    <br>
-    <label class="rfc-label">Взял ипотеку</label>
-    <input type="text" class="rfc-input" data-rfc-id="rfc-startMortgage">
-    <br>
-    <label class="rfc-label">На сколько лет</label>
-    <input type="number" min="5" max="30" class="rfc-input" data-rfc-id="rfc-years">
-    <br> 
+    <div class="rfc-top-table">
+      <div class="rfc-top-row">
+        <label class="rfc-label">Ставка</label>
+        <div class="rfc-top-row-input rfc-top-row-input--short">
+          <input type="number" min="8" max="20" class="rfc-input" data-rfc-id="rfc-percent"><span class="rfc-span symbol"> %</span>
+        </div>
+      </div>
+      <div class="rfc-top-row">
+        <label class="rfc-label">Платеж по графику</label>
+        <div class="rfc-top-row-input">
+          <input type="number" min="5000" step="100" class="rfc-input" data-rfc-id="rfc-monthlyFee"><span class="rfc-span symbol"> ₽</span>
+        </div>
+      </div>
+      <div class="rfc-top-row">
+        <label class="rfc-label">Взял ипотеку</label>
+        <div class="rfc-top-row-input rfc-inputrelative">
+          <input type="text" class="rfc-input" data-rfc-id="rfc-startMortgage" readonly="readonly">
+          <svg id="Слой_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 19.8">
+            <style>
+            .st0 {
+              fill: none
+            }
 
+            .st1 {
+              fill-opacity: 1
+            }
+            </style>
+            <path class="st0" d="M-.1-2.1h18v24h-18v-24z" />
+            <path class="st1" d="M5.9 8.9h-2v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1v-2h-2v2h-8v-2h-2v2h-1c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm0 16h-14v-11h14v11z" />
+          </svg>
+        </div>
+      </div>
+      <div class="rfc-top-row">
+        <label class="rfc-label">На сколько лет</label>
+        <div class="rfc-top-row-input rfc-top-row-input--short">
+          <input type="number" min="5" max="30" class="rfc-input" data-rfc-id="rfc-years">
+        </div>
+      </div>
+    </div>
   </div>
   <div data-rfc-id="alertText" class="rfc-hidden"></div>
   <div data-rfc-id="nextStepArea" class="rfc-nextStepArea">
     <div data-rfc-id="creditPercentAmount">
-      <label class="rfc-label" id="rfc-balanceOfTheLoanText">Остаток по кредиту</label>
-      <label type="text" class="rfc-label" id="rfc-balanceOfTheLoan"></label>
-      <br>
-      <label id="rfc-balanceOfTheInterestText" class="rfc-label rfc-hide"></label>
-      <label type="text" class="rfc-label rfc-hide" id="rfc-balanceOfTheInterest"></label>
+      <div class="rfc-overflow">
+        <label class="rfc-label" id="rfc-balanceOfTheLoanText">Остаток по кредиту</label>
+        <div class="rfc-stat-first">
+          <label type="text" class="" id="rfc-balanceOfTheLoan"></label>
+          <div>
+            <label type="text" class="" id="rfc-balanceOfTheInterest"></label>
+          </div>
+        </div>
+      </div>
     </div>
     <div data-rfc-id="divRefinancebuy">
       <div class="rfc-separator"></div>
       <h2 class="rfc-h2">Рефинансирую <span class="rfc-hidden" data-rfc-id="rfc-newPercentToSpan">под ставку <span data-rfc-id="rfc-newPercentSpan"></span>%</span></h2>
-      <div data-rfc-id="rfc-refinanceDiv">
-        <label class="rfc-label">под ставку</label>
+      <div data-rfc-id="rfc-refinanceDiv" class="rfc-overflow">
+        <label class="rfc-label rfc-label--bid">под ставку</label>
         <input type="number" min="6" max="15" class="rfc-input" data-rfc-id="rfc-newPercentInput"><span class="rfc-span symbol"> %</span>
       </div>
       <div id="rfc-noCheating" class="rfc-hidden">
         <h1 class="rfc-h1">Нет, мы не мошенники, и не будем заставлять вас рефинансировать ипотеку под больший процент :)</h1></div>
-      <table class="rfc-table rfc-table--desktop" id="rfc-tableRefinancebuy">
-        <tr id="rfc-tr1">
-          <th data-cell-id="rfc-td10">Платеж в месяц</th>
-          <td data-cell-id="rfc-td11"></td>
-          <td data-cell-id="rfc-td12"></td>
-          <td data-cell-id="rfc-td13"></td>
-          <td data-cell-id="rfc-td14"></td>
-          <td data-cell-id="rfc-td15"></td>
-          <td data-cell-id="rfc-td16"></td>
-          <td data-cell-id="rfc-td17"></td>
-        </tr>
-        <tr>
-          <th data-cell-id="rfc-td20">Погасите ипотеку</th>
-          <td data-cell-id="rfc-td21"></td>
-          <td data-cell-id="rfc-td22"></td>
-          <td data-cell-id="rfc-td23"></td>
-          <td data-cell-id="rfc-td24"></td>
-          <td data-cell-id="rfc-td25"></td>
-          <td data-cell-id="rfc-td26"></td>
-          <td data-cell-id="rfc-td27"></td>
-        </tr>
-        <tr>
-          <th data-cell-id="rfc-td30">Сэкономите</th>
-          <td data-cell-id="rfc-td31"></td>
-          <td data-cell-id="rfc-td32"></td>
-          <td data-cell-id="rfc-td33"></td>
-          <td data-cell-id="rfc-td34"></td>
-          <td data-cell-id="rfc-td35"></td>
-          <td data-cell-id="rfc-td36"></td>
-          <td data-cell-id="rfc-td37"></td>
-        </tr>
-      </table>
-      <table class="rfc-table rfc-table--mobile" id="rfc-tableRefinancebuy">
-        <tr id="rfc-tr1">
-          <th data-cell-id="rfc-td10">Платеж в месяц</th>
-          <th data-cell-id="rfc-td20">Погасите ипотеку</th>
-          <th data-cell-id="rfc-td30">Сэкономите</th>
-        </tr>
-        <tr id="rfc-tr2">
-          <td data-cell-id="rfc-td11"></td>
-          <td data-cell-id="rfc-td21"></td>
-          <td data-cell-id="rfc-td31"></td>
-        </tr>
-        <tr id="rfc-tr3">
-          <td data-cell-id="rfc-td12"></td>
-          <td data-cell-id="rfc-td22"></td>
-          <td data-cell-id="rfc-td32"></td>
-        </tr>
-        <tr id="rfc-tr4">
-          <td data-cell-id="rfc-td13"></td>
-          <td data-cell-id="rfc-td23"></td>
-          <td data-cell-id="rfc-td33"></td>
-        </tr>
-        <tr id="rfc-tr5">
-          <td data-cell-id="rfc-td14"></td>
-          <td data-cell-id="rfc-td24"></td>
-          <td data-cell-id="rfc-td34"></td>
-        </tr>
-        <tr id="rfc-tr6">
-          <td data-cell-id="rfc-td15"></td>
-          <td data-cell-id="rfc-td25"></td>
-          <td data-cell-id="rfc-td35"></td>
-        </tr>
-        <tr id="rfc-tr7">
-          <td data-cell-id="rfc-td16"></td>
-          <td data-cell-id="rfc-td26"></td>
-          <td data-cell-id="rfc-td36"></td>
-        </tr>
-        <tr id="rfc-tr8">
-          <td data-cell-id="rfc-td17"></td>
-          <td data-cell-id="rfc-td27"></td>
-          <td data-cell-id="rfc-td37"></td>
-        </tr>
-      </table> 
-      <div class="rfc-show-calculations-area">
-        <div class="rfc-show-calculations-btn" data-rfc-id="calculationsBtn">Показать расчеты</div>
-        <div class="rfc-show-calculations-text" data-rfc-id="calculations"></div>
+      <div data-rfc-id="table-calculations">
+        <div class="rfc-table-area rfc-table-area--desktop">
+          <table class="rfc-table rfc-table--desktop">
+            <tr id="rfc-tr1">
+              <th data-cell-id="rfc-td10" class="rfc-text-left">Платеж в месяц</th>
+              <td data-cell-id="rfc-td11"></td>
+              <td data-cell-id="rfc-td12"></td>
+              <td data-cell-id="rfc-td13"></td>
+              <td data-cell-id="rfc-td14"></td>
+              <td data-cell-id="rfc-td15"></td>
+              <td data-cell-id="rfc-td16"></td>
+              <td data-cell-id="rfc-td17"></td>
+            </tr>
+            <tr>
+              <th data-cell-id="rfc-td20" class="rfc-text-left">Погасите ипотеку</th>
+              <td data-cell-id="rfc-td21"></td>
+              <td data-cell-id="rfc-td22"></td>
+              <td data-cell-id="rfc-td23"></td>
+              <td data-cell-id="rfc-td24"></td>
+              <td data-cell-id="rfc-td25"></td>
+              <td data-cell-id="rfc-td26"></td>
+              <td data-cell-id="rfc-td27"></td>
+            </tr>
+            <tr>
+              <th data-cell-id="rfc-td30" class="rfc-text-left">Сэкономите</th>
+              <td data-cell-id="rfc-td31"></td>
+              <td data-cell-id="rfc-td32"></td>
+              <td data-cell-id="rfc-td33"></td>
+              <td data-cell-id="rfc-td34"></td>
+              <td data-cell-id="rfc-td35"></td>
+              <td data-cell-id="rfc-td36"></td>
+              <td data-cell-id="rfc-td37"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="rfc-table-area rfc-table-area--mobile">
+          <table class="rfc-table rfc-table--mobile">
+            <tr id="rfc-tr1">
+              <th data-cell-id="rfc-td10">Платеж в месяц</th>
+              <th data-cell-id="rfc-td20">Погасите ипотеку</th>
+              <th data-cell-id="rfc-td30">Сэкономите</th>
+            </tr>
+            <tr id="rfc-tr2">
+              <td data-cell-id="rfc-td11"></td>
+              <td data-cell-id="rfc-td21"></td>
+              <td data-cell-id="rfc-td31"></td>
+            </tr>
+            <tr id="rfc-tr3">
+              <td data-cell-id="rfc-td12"></td>
+              <td data-cell-id="rfc-td22"></td>
+              <td data-cell-id="rfc-td32"></td>
+            </tr>
+            <tr id="rfc-tr4">
+              <td data-cell-id="rfc-td13"></td>
+              <td data-cell-id="rfc-td23"></td>
+              <td data-cell-id="rfc-td33"></td>
+            </tr>
+            <tr id="rfc-tr5">
+              <td data-cell-id="rfc-td14"></td>
+              <td data-cell-id="rfc-td24"></td>
+              <td data-cell-id="rfc-td34"></td>
+            </tr>
+            <tr id="rfc-tr6">
+              <td data-cell-id="rfc-td15"></td>
+              <td data-cell-id="rfc-td25"></td>
+              <td data-cell-id="rfc-td35"></td>
+            </tr>
+            <tr id="rfc-tr7">
+              <td data-cell-id="rfc-td16"></td>
+              <td data-cell-id="rfc-td26"></td>
+              <td data-cell-id="rfc-td36"></td>
+            </tr>
+            <tr id="rfc-tr8">
+              <td data-cell-id="rfc-td17"></td>
+              <td data-cell-id="rfc-td27"></td>
+              <td data-cell-id="rfc-td37"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="rfc-show-calculations-area">
+          <div class="rfc-show-calculations-btn" data-rfc-id="calculationsBtn">Показать расчеты</div>
+          <div class="rfc-show-calculations-text" data-rfc-id="calculations"></div>
+        </div>
       </div>
     </div>
     <div class="rfc-requestarea">

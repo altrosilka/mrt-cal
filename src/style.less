@@ -19,10 +19,78 @@
   .rfc-hidden {
     display: none;
   }
+  .rfc-text-left{
+    text-align: left!important;
+  }
+  .rfc-overflow {
+    overflow: auto;
+  }
+  .rfc-stat-first {
+    padding-top: 11px;
+  }
+  .rfc-input {
+    width: 240px;
+    font-size: 24px;
+    padding: 12px 20px;
+
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: 0.2s;
+    &:disabled {
+      opacity: 0.8;
+      background: #eee;
+    }
+    &:focus {
+      border-color: @n1Color;
+      /*box-shadow: inset 0px 0px 2px @n1ColorHover;*/
+      outline: none;
+    }
+  }
   h2 {
     font-weight: normal;
     margin: 0;
     padding: 0;
+  }
+  .rfc-top-table {
+    width: 540px;
+    svg {
+      position: absolute;
+      width: 20px;
+      top: 16px;
+      right: 10px;
+      transition: 0.2s;
+      fill: #ddd;
+    }
+    .rfc-top-row {
+      overflow: auto;
+      margin-bottom: 35px;
+      @media @xs {
+        margin-bottom: 10px;
+      }
+    }
+    .rfc-inputrelative {
+      position: relative;
+      &:hover {
+        .rfc-input {
+          cursor: pointer;
+        }
+        svg {
+          fill: @n1ColorHover;
+        }
+      }
+    }
+    .rfc-top-row-input {
+      float: left;
+
+
+      &.rfc-top-row-input--short {
+        .rfc-input {
+          width: 100px;
+        }
+      }
+    }
   }
   .rfc-finalAreaText {
     font-size: 20px;
@@ -56,15 +124,21 @@
     font-weight: normal;
   }
 
-  #rfc-tableRefinancebuy,
   #rfc-noCheating {
     display: none;
   }
 
   .rfc-label {
-    display: inline-block;
-    width: 350px;
+    width: 280px;
     font-size: 24px;
+    float: left;
+    line-height: 53px;
+
+    @media @xs {
+      width: 100%;
+      float: none;
+      display: block;
+    }
   }
 
   #rfc-balanceOfTheLoan {
@@ -76,26 +150,9 @@
     font-size: 18px;
   }
 
-  .rfc-input,
-  .datepicker-here {
-    width: 200px;
-    font-size: 24px;
-    padding: 12px 5px;
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 35px;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    &:disabled {
-      opacity: 0.8;
-      background: #eee;
-    }
-  }
 
   .rfc-table {
-    margin: 10px 5px;
+
     border-collapse: collapse;
     border: 0px solid black;
   }
@@ -312,6 +369,9 @@
 
   .rfc-ra-desc {
     font-size: 18px;
+    @media @xs {
+      margin-top: 10px;
+    }
   }
 
   .rfc-show-calculations-area {
@@ -332,7 +392,7 @@
   }
 
   @media @xs {
-    .rfc-table--desktop {
+    .rfc-table-area--desktop {
       display: none !important;
     }
     .symbol {
@@ -344,7 +404,7 @@
       text-align: center;
     }
     .rfc-table {
-      margin: 0px;
+      margin: 30px 0px 0;
       width: 100%;
     }
     #rfc-percent,
@@ -355,7 +415,7 @@
   }
 
   @media @morexs {
-    .rfc-table--mobile {
+    .rfc-table-area--mobile {
       display: none !important;
     }
     #rfc-calc {
@@ -363,8 +423,8 @@
       width: 850px;
     }
     .rfc-table {
-      margin: 0px;
-      width: 850px;
+      margin: 30px 0px 0px;
+      width: 100%;
     }
     .rfc-table th,
     td {

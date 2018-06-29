@@ -38,13 +38,16 @@
   /* ЛОГИЧЕСКИЕ КОНСТАНТЫ */
   var DISABLED_REFINANCE_LAST_MONTH = 24 // Запретить расчет, если до конца текущей ипотеки менее стольки месяцев
   var TABLE_PAYMENT_STEP = 1000;
-  var MAX_YEARS_INTERVAL = {
-    min: 5,
-    max: 30
-  };
+  var VALIDATEION_FIELDS = {
+    yearsInterval: {
+      min: 5,
+      max: 30
+    },
+    currentPaymentMin: 5000
+  }
 
   var maxInDataPicker = new Date();
-  maxInDataPicker.setMonth(maxInDataPicker.getMonth() - 1);
+  maxInDataPicker.setMonth(maxInDataPicker.getMonth() - 12);
 
   // обозначения DOM элементов нашего калькулятора
   var DOM_RFC_ID = {
@@ -85,6 +88,9 @@
   /* ОБЪЯВЛЕНИЕ РАСЧЕТНЫХ ПЕРЕМЕННЫХ */
   var $DOM = {},
     calculationsParams = {};
+
+  var CURRENT_DATE = new Date();
+  var HIDDEN_COLS = []
 
   initCalculator();
 
@@ -127,6 +133,7 @@
     $DOM.leadFormInputName = getElementByRfcId('input:name');
     $DOM.calculationsArea = getElementByRfcId('calculations');
     $DOM.calculationsBtn = getElementByRfcId('calculationsBtn');
+    $DOM.tableCalculations = getElementByRfcId('table-calculations');
 
   }
 
@@ -285,17 +292,15 @@
   };
 
   function tableСalculation() {
-    if (Number($DOM.newPercentInput.val()) < Number($DOM.percentInput.val()) && $DOM.newPercentInput.val() != "" && Number($DOM.newPercentInput.val()) > 0) {
-      $DOM.noCheating.css({ 'display': 'none' });
-      $('.rfc-table--desktop').css({ 'display': 'block' });
-      $('.rfc-table--mobile').css({ 'display': 'block' });
+    if (Number($DOM.newPercentInput.val()) <= Number($DOM.percentInput.val()) && $DOM.newPercentInput.val() != "" && Number($DOM.newPercentInput.val()) > 0) {
+      $DOM.noCheating.hide();
+      $DOM.tableCalculations.show();
       setParametersOfTableTR2();
       setParametersOfTableTR1();
       setParametersOfTableTR3();
     } else {
-      $('.rfc-table--desktop').css({ 'display': 'none' });
-      $('.rfc-table--mobile').css({ 'display': 'none' });
-      $DOM.noCheating.css({ 'display': 'block' });
+      $DOM.tableCalculations.hide();
+      $DOM.noCheating.show();
     }
 
     calculationsParams.refinans_rate = parseFloat($DOM.percentInput.val());
@@ -310,29 +315,58 @@
   };
 
   function setMonthlyFeeArray() {
-    monthlyFeeArray[1] = monthlyFeeArray[0] + Math.floor((monthlyFeeArray[3] - monthlyFeeArray[0]) / 3);
-    monthlyFeeArray[2] = monthlyFeeArray[0] + Math.floor((monthlyFeeArray[3] - monthlyFeeArray[0]) / 3 * 2);
-    monthlyFeeArray[4] = monthlyFeeArray[3] * 1.25;
-    monthlyFeeArray[5] = monthlyFeeArray[3] * 1.5;
-    monthlyFeeArray[6] = monthlyFeeArray[3] * 2;
+    HIDDEN_COLS = [false, false, false, false, false, false, false];
+    var isSameRate = (parseFloat($DOM.percentInput.val()) === parseFloat($DOM.newPercentInput.val()));
+
+
+    if (isSameRate) {
+      monthlyFeeArray[0] = monthlyFeeArray[3]; // устанавливаем начальное значение в текущий платеж + 1000
+      monthlyFeeArray[1] = monthlyFeeArray[0] * 1.25;
+      monthlyFeeArray[2] = monthlyFeeArray[0] * 1.5;
+      monthlyFeeArray[3] = monthlyFeeArray[0] * 1.75;
+      monthlyFeeArray[4] = monthlyFeeArray[0] * 2;
+      monthlyFeeArray[5] = monthlyFeeArray[0] * 2.5;
+      monthlyFeeArray[6] = monthlyFeeArray[0] * 3;
+    } else {
+      monthlyFeeArray[1] = monthlyFeeArray[0] + Math.floor((monthlyFeeArray[3] - monthlyFeeArray[0]) / 3);
+      monthlyFeeArray[2] = monthlyFeeArray[0] + Math.floor((monthlyFeeArray[3] - monthlyFeeArray[0]) / 3 * 2);
+      monthlyFeeArray[4] = monthlyFeeArray[3] * 1.25;
+      monthlyFeeArray[5] = monthlyFeeArray[3] * 1.5;
+      monthlyFeeArray[6] = monthlyFeeArray[3] * 2;
+    }
+
 
     for (var i = 1; i < monthlyFeeArray.length; i++) {
       monthlyFeeArray[i] = roundingThousands(monthlyFeeArray[i], 2);
     }
+
+    if (monthlyFeeArray[2] >= monthlyFeeArray[3]) {
+      HIDDEN_COLS[2] = true;
+    }
+    if (monthlyFeeArray[1] >= monthlyFeeArray[2]) {
+      HIDDEN_COLS[1] = true;
+    }
+    if (monthlyFeeArray[0] >= monthlyFeeArray[1]) {
+      HIDDEN_COLS[0] = true;
+    }
   };
 
   function setParametersOfTableTR1() {
+    var $elem;
     for (i = 0; i < monthlyFeeArray.length; i++) {
       var tdId = "rfc-td1";
       tdId += i + 1;
-      $('[data-cell-id="' + tdId + '"]').html(DATA_OPERATION.splitIntoThousands(monthlyFeeArray[i]));
+      $elem = $('[data-cell-id="' + tdId + '"]').html(DATA_OPERATION.splitIntoThousands(monthlyFeeArray[i]));
+
+      HIDDEN_COLS[i] ? $elem.hide() : $elem.show();
     };
   };
 
   function setParametersOfTableTR2() {
     monthlyFeeArray[3] = Number($DOM.monthlyFeeInput.val());
     var theMaturityDateOfTheMortgage = new Array(7);
-    var temp = 0;
+    var temp = 0,
+      $elem;
     var step = TABLE_PAYMENT_STEP;
     while (true) {
       theMaturityDateOfTheMortgage[0] = causeCalculating(2, monthlyFeeArray[3] - step);
@@ -364,7 +398,9 @@
     for (i = 0; i < theMaturityDateOfTheMortgage.length; i++) {
       var tdId = "rfc-td2";
       tdId += i + 1;
-      $('[data-cell-id="' + tdId + '"]').html(theMaturityDateOfTheMortgage[i]);
+      $elem = $('[data-cell-id="' + tdId + '"]').html(theMaturityDateOfTheMortgage[i]);
+
+      HIDDEN_COLS[i] ? $elem.hide() : $elem.show();
     };
 
     calculationsParams.monthlyFeeArray = [monthlyFeeArray[0], monthlyFeeArray[3], monthlyFeeArray[6]];
@@ -373,10 +409,21 @@
   };
 
   function setParametersOfTableTR3() {
+    var $elem, tdId;
     for (i = 0; i < monthlyFeeArray.length; i++) {
-      var tdId = "rfc-td3";
+      tdId = "rfc-td3";
       tdId += i + 1;
-      $('[data-cell-id="' + tdId + '"]').html(DATA_OPERATION.splitIntoThousands(saving[i]));
+
+
+      $elem = $('[data-cell-id="' + tdId + '"]');
+
+      if (saving[i] < 0) {
+        $elem.html('Убыток: ' + DATA_OPERATION.splitIntoThousands(saving[i] * -1));
+      } else {
+        $elem.html(DATA_OPERATION.splitIntoThousands(saving[i]));
+      }
+
+      HIDDEN_COLS[i] ? $elem.hide() : $elem.show();
     };
   };
 
@@ -474,11 +521,7 @@
     };
 
     return getBalanceOfTheLoan();
-
   };
-
-
-
 
 
   function prepareStylesAndScripts(callback) {
@@ -505,9 +548,16 @@
     }
 
     // выйти если год указан неверно
-    if (!data.years || data.years < MAX_YEARS_INTERVAL.min || data.years > MAX_YEARS_INTERVAL.max) {
+    if (!data.years || data.years < VALIDATEION_FIELDS.yearsInterval.min || data.years > VALIDATEION_FIELDS.yearsInterval.max) {
       return
     }
+
+    // выйти если платеж меньше минимума
+    if (!data.currentPayment || data.currentPayment < VALIDATEION_FIELDS.currentPaymentMin) {
+      return
+    }
+
+
 
     if (!$DOM.percentInput.val() || !$DOM.monthlyFeeInput.val()) {
       return
@@ -552,11 +602,11 @@
   function getDescriptionText(info) {
     var str = '<p>Ипотека на прежних условиях. Остаток по кредиту — ' + DATA_OPERATION.splitIntoThousands(info.refinans_price) + '. Будете гасить ипотеку по ставке ' + info.refinans_rate + '% и каждый месяц платить по ' + DATA_OPERATION.splitIntoThousands(info.refinans_payment) + '. В этом случае закроете ипотеку в ' + info.finishDateParent + '. За это время кроме основного долга отдадите ' + DATA_OPERATION.splitIntoThousands(info.refinans_percent) + ' процентов.</p>';
     str += '<p>Рефинансирование. Остаток по кредиту — ' + DATA_OPERATION.splitIntoThousands(info.refinans_price) + '.<br>Рефинансируете ипотеку и будете гасить ее по ставке ' + info.refinans_rate_now + '%. ';
-    str += '<br>При платеже ' + DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[0]) + ' закроете ипотеку в ' + DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[0]) + ', на процентах сэкономите ' + DATA_OPERATION.splitIntoThousands(calculationsParams.saving[0]) + '.';
+    str += '<br>При платеже ' + DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[0]) + ' закроете ипотеку в ' + DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[0]) + ', на процентах '+((calculationsParams.saving[0] > 0) ? 'сэкономите' : 'потеряете')+' ' + DATA_OPERATION.splitIntoThousands(calculationsParams.saving[0]) + '.';
     str += '<br>При платеже ' + DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[1]) + ' закроете ипотеку в ' + DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[1]) + ', на процентах сэкономите ' + DATA_OPERATION.splitIntoThousands(calculationsParams.saving[1]) + '.';
     str += '<br>При платеже ' + DATA_OPERATION.splitIntoThousands(calculationsParams.monthlyFeeArray[2]) + ' закроете ипотеку в ' + DATA_OPERATION.replaceMonthNameToParent(calculationsParams.theMaturityDateOfTheMortgage[2]) + ', на процентах сэкономите ' + DATA_OPERATION.splitIntoThousands(calculationsParams.saving[2]) + '.</p>';
     str += '<p>Дополнительные расходы при рефинансировании ипотеки. Если вы уйдете из своего банка в другой, появятся дополнительные расходы. Вычтите эти расходы из полученной суммы экономии.</p>';
-    str += '<p>Обязательные расходы: страхование имущества, титула, жизни и здоровья заемщика — от 0,3% суммы кредита, оценка квартиры — от 2000 Р, госпошлина за снятие и наложение обременения — 1000 Р. Это усредненные данные, попросите у своего банка точные суммы.</p>';
+    str += '<p>Обязательные расходы: страхование имущества, титула, жизни и здоровья заемщика — от 0,3% суммы кредита, оценка квартиры — от 2000 ₽, госпошлина за снятие и наложение обременения — 1000 ₽. Это усредненные данные, попросите у своего банка точные суммы.</p>';
     str += '<p>Необязательные расходы (в зависимости от требований банка): повышенная ставка на период снятия обременения и наложения нового — плюс 0,5–2 процентных пункта к новой ставке по кредиту.</p>';
 
     return str;
@@ -603,11 +653,11 @@
       $INJECT_lib_datepicker_js;
     })();
 
-
     $DOM.startMortgageInput.datepicker({
       minView: 'months',
       dateFormat: 'MM yyyy',
       view: 'months',
+      maxDate: maxInDataPicker,
       autoClose: true
     })
 
